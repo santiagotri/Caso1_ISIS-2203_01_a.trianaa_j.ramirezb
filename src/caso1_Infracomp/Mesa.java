@@ -2,11 +2,14 @@ package caso1_Infracomp;
 
 import java.util.*;
 
-public class Mesa {
+public class Mesa{
 	
 	private int numPlatos;
-	private Queue<CubiertoT1> cubiertosT1;
-	private Queue<CubiertoT2> cubiertosT2;
+	private static Queue<CubiertoT1> cubiertosT1;
+	private static Queue<CubiertoT2> cubiertosT2;
+	
+	public Queue<CubiertoT1> darCubiertosT1() {return cubiertosT1;}
+	public Queue<CubiertoT2> darCubiertosT2() {return cubiertosT2;}
 	
 	public Mesa (Integer PnumPlatos) {
 		this.numPlatos = PnumPlatos;
@@ -19,23 +22,32 @@ public class Mesa {
 		{
 			cubiertosT1.add((CubiertoT1) cubierto);
 			if(cubiertosT1.size()==1 && cubiertosT2.size()>0) notify();
-			System.out.println("Llego cubiertos T1 con id " + cubierto.darId());
+			mensaje("Llego el cubiertoT1 con id " + cubierto.darId() + " cantCubT1= " + cubiertosT1.size()+ " cantCubT2= " + cubiertosT2.size());
 		}
 		else if (cubierto.darDescripcion() == "CubiertoT2")
 		{
 			cubiertosT2.add((CubiertoT2) cubierto);
 			if(cubiertosT2.size()==1 && cubiertosT1.size()>0) notify();
-			System.out.println("Llego cubiertos T2 con id " + cubierto.darId());
+			mensaje("Llego el cubiertoT2 con id " + cubierto.darId() + " cantCubT1= " + cubiertosT1.size()+ " cantCubT2= " + cubiertosT2.size());
 		}
 		else
 		{
-			System.out.println("No se reconoce el cubierto que se quiere agregar (Clase Mesa)");
+			mensaje("No se reconoce el cubierto que se quiere agregar (Clase Mesa)");
 		}
 	}
 	
-	public CubiertoT2 darCubiertoT2 () {return cubiertosT2.poll();}
-	public CubiertoT1 darCubiertoT1 () {return cubiertosT1.poll();}
+	public synchronized CubiertoT2 darCubiertoT2 () {return cubiertosT2.poll();}
+	public synchronized CubiertoT1 darCubiertoT1 () {return cubiertosT1.poll();}
 	
 	public int darNumPlatos() { return numPlatos;}
+	
+	private void mensaje(String mensaje) {
+		System.out.println("Mesa: " + mensaje);
+	}
+
+	public boolean hayCubiertosDeAmbosTipos() {
+		if(cubiertosT1.size()>0 && cubiertosT2.size()>0) return true;
+		return false;
+	}
 	
 }

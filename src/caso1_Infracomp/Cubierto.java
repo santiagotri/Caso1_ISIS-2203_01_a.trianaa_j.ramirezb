@@ -4,7 +4,7 @@ public class Cubierto extends Object{
 
 	private int id;
 	
-	private static String descripcion;
+	private String descripcion;
 	
 	public Integer darId() {return id;}
 	

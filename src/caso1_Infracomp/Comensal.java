@@ -36,8 +36,9 @@ public class Comensal extends Thread{
 				if(numPlatoActual == 0)centinela = false;
 				if(mitadPlatos == numPlatoActual) {
 					try {
-						mensaje("Esta esperando en la mitad");
+						mensaje("Esta esperando a que los demas comensales llegen a la mitad (faltan " + (barrera.getParties()-barrera.getNumberWaiting()-1) + ")");
 						barrera.await();
+						mensaje("Se ha despertado, porque todos han llegado a la mitad de la cena");
 					} catch (InterruptedException | BrokenBarrierException e) {
 						e.printStackTrace();
 					}
@@ -46,9 +47,13 @@ public class Comensal extends Thread{
 				}
 			}else {
 				try {
-					synchronized(this) {
-						wait();
+					mensaje("No hay cubiertos en la mesa, esperando notify");
+					synchronized(mesa) {
+						while(!mesa.hayCubiertosDeAmbosTipos()) {
+							mesa.wait();
+						}
 					}
+					mensaje("Notify recibido, intentando coger cubiertos de nuevo");
 				}catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -68,20 +73,27 @@ public class Comensal extends Thread{
 		}
 	}
 	
-	private synchronized boolean tomarCubiertos() {
+	private boolean tomarCubiertos() {
 		cubiertoT1 = mesa.darCubiertoT1();
 		cubiertoT2 = mesa.darCubiertoT2();
 		
 		if(cubiertoT1==null || cubiertoT2==null)
 		{
-			if(cubiertoT1 != null)mesa.anadirCubierto(cubiertoT1);
-			if(cubiertoT2 != null)mesa.anadirCubierto(cubiertoT2);
+			if(cubiertoT1 != null) {
+				mensaje("Ha devuelto el " + cubiertoT1.darDescripcion() + " con id " + cubiertoT1.darId());
+				mesa.anadirCubierto(cubiertoT1);
+			}
+			if(cubiertoT2 != null) {
+				mensaje("Ha devuelto el " + cubiertoT2.darDescripcion() + " con id " + cubiertoT2.darId());
+				mesa.anadirCubierto(cubiertoT2);
+			}
+			
 			cubiertoT1 = null;
 			cubiertoT2 = null;
-			mensaje("Ha devuelto los cubiertos a la mesa porque no habian suficientes.");
+			
 			return false;
 		}
-		mensaje("Ha cogido los cubiertos de manera exitosa (T1: " + cubiertoT1.darId() +", "+ cubiertoT2.darId()+").");
+		mensaje("Ha cogido los cubiertos de manera exitosa (T1: " + cubiertoT1.darId() +", T2: "+ cubiertoT2.darId()+").");
 		return true;
 	}
 	
@@ -89,24 +101,26 @@ public class Comensal extends Thread{
 		espera (3,5);
 	}
 	
-	private synchronized void dejarCubiertos() {
+	private void dejarCubiertos() {
 		while(!fregadero.hayEspacio()) {
 			try {
 				Thread.sleep(1000);
+				mensaje("No hay espacio en el fregadero, esperando...");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		mensaje ("Envio los cubiertos al fregadero.");
+		mensaje ("Envio los cubiertos al fregadero.(T1: " + cubiertoT1.darId() +",T2: "+ cubiertoT2.darId()+").");
 		fregadero.agregarCubierto(cubiertoT1);
 		fregadero.agregarCubierto(cubiertoT2);
+		
 		cubiertoT1 = null;
 		cubiertoT2 = null;
 	}
 	
 	private void mensaje (String mensaje) {
-		System.out.println(id + ": " + mensaje);
+		System.out.println("Comensal " + id + ": " + mensaje);
 	}
 
 }

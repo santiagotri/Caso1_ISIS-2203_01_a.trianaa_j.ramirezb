@@ -66,13 +66,13 @@ public class main {
 			mesa.anadirCubierto(act);
 		}
 		
-		for(int i=0; i<numCubiertosT2; i++) {
+		for(int i=numCubiertosT1; i<numCubiertosT2+numCubiertosT1; i++) {
 			CubiertoT2 act = new CubiertoT2(i);
 			mesa.anadirCubierto(act);
 		}
 		CyclicBarrier barrera = new CyclicBarrier(numComensales);
 		ArrayList<Comensal> comensales = new ArrayList<>();
-		for(int i = 0 ; i< numComensales; i++) {
+		for(int i = 1 ; i<= numComensales; i++) {
 			comensales.add(new Comensal(i, fregadero, mesa, barrera));
 		}
 		
@@ -90,6 +90,7 @@ public class main {
 		}
 		System.out.println("La cena ha acabado");
 		lavaplatos.detener();
+		
 		
 		
 	}
