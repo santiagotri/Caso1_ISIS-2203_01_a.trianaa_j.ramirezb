@@ -5,11 +5,13 @@ public class Fregadero {
 	
 	private int tamFregadero;
 	
+	
 	private Queue cubiertos;
 	
 	
 	public Fregadero (int tamFregadero) {
 		this.tamFregadero = tamFregadero;
+		cubiertos = new LinkedList<>();
 	}
 	
 	public int darTamFregadero () {
@@ -22,6 +24,11 @@ public class Fregadero {
 	
 	public Cubierto darCubierto () {
 		return (Cubierto) cubiertos.poll();
+	}
+
+	public boolean hayEspacio() {
+		if(darTamFregadero()-cubiertos.size()>=2) return true;
+		return false;
 	}
 
 }

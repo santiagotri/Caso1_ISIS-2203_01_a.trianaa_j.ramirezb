@@ -1,13 +1,18 @@
 package caso1_Infracomp;
 
-public class Cubierto {
+public class Cubierto extends Object{
 
 	private int id;
 	
+	private static String descripcion;
+	
 	public Integer darId() {return id;}
 	
-	public Cubierto(int id) {
+	public String darDescripcion() {return descripcion;}
+	
+	public Cubierto(int id, String pDescripcion) {
 		this.id = id;
+		this.descripcion = pDescripcion;
 	}
 	
 	

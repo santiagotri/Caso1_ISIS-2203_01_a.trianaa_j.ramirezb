@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.concurrent.CyclicBarrier;
 
 public class main {
 	
@@ -51,6 +53,44 @@ public class main {
 
 	public static void main(String[] args) {
 		cargar();
+		iniciarCena();
+	}
+	
+	private static void iniciarCena () {
+		Mesa mesa = new Mesa(numPlatos);
+		Fregadero fregadero = new Fregadero(tamFregadero);
+		Lavaplatos lavaplatos = new Lavaplatos(fregadero, mesa);
+		
+		for(int i=0; i<numCubiertosT1; i++) {
+			CubiertoT1 act = new CubiertoT1(i);
+			mesa.anadirCubierto(act);
+		}
+		
+		for(int i=0; i<numCubiertosT2; i++) {
+			CubiertoT2 act = new CubiertoT2(i);
+			mesa.anadirCubierto(act);
+		}
+		CyclicBarrier barrera = new CyclicBarrier(numComensales);
+		ArrayList<Comensal> comensales = new ArrayList<>();
+		for(int i = 0 ; i< numComensales; i++) {
+			comensales.add(new Comensal(i, fregadero, mesa, barrera));
+		}
+		
+		lavaplatos.start();
+		for(int i = 0 ; i< numComensales; i++) {
+			comensales.get(i).start();
+		}
+		for(int i = 0 ; i< numComensales; i++) {
+			try {
+				comensales.get(i).join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		System.out.println("La cena ha acabado");
+		lavaplatos.detener();
+		
 		
 	}
 
