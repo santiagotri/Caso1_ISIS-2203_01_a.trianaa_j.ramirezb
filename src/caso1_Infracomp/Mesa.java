@@ -11,10 +11,13 @@ public class Mesa{
 	public Queue<CubiertoT1> darCubiertosT1() {return cubiertosT1;}
 	public Queue<CubiertoT2> darCubiertosT2() {return cubiertosT2;}
 	
-	public Mesa (Integer PnumPlatos) {
+	private boolean imprimirMensajes;
+	
+	public Mesa (Integer PnumPlatos, boolean imprimirMensajes) {
 		this.numPlatos = PnumPlatos;
 		cubiertosT1 = new LinkedList<>();
 		cubiertosT2 = new LinkedList<>();
+		this.imprimirMensajes =imprimirMensajes;
 	}
 	
 	public synchronized void anadirCubierto(Cubierto cubierto) {
@@ -42,7 +45,7 @@ public class Mesa{
 	public int darNumPlatos() { return numPlatos;}
 	
 	private void mensaje(String mensaje) {
-		System.out.println("Mesa: " + mensaje);
+		if(imprimirMensajes)System.out.println("Mesa: " + mensaje);
 	}
 
 	public boolean hayCubiertosDeAmbosTipos() {

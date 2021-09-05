@@ -9,6 +9,12 @@ import java.util.concurrent.CyclicBarrier;
 
 public class main {
 	
+	
+	private static final boolean IMPRIMIR_MENSAJES_COMENSALES = true;
+	private static final boolean IMPRIMIR_MENSAJES_MESA = true;
+	private static final boolean IMPRIMIR_MENSAJES_FREGADERO = true;
+	private static final boolean IMPRIMIR_MENSAJES_LAVAPLATOS = true;
+	
 	static int numComensales;
 	static int numCubiertosT1;
 	static int numCubiertosT2;
@@ -57,9 +63,12 @@ public class main {
 	}
 	
 	private static void iniciarCena () {
-		Mesa mesa = new Mesa(numPlatos);
-		Fregadero fregadero = new Fregadero(tamFregadero);
-		Lavaplatos lavaplatos = new Lavaplatos(fregadero, mesa);
+		
+		System.out.println("La cena a iniciado...");
+		
+		Mesa mesa = new Mesa(numPlatos, IMPRIMIR_MENSAJES_MESA);
+		Fregadero fregadero = new Fregadero(tamFregadero, IMPRIMIR_MENSAJES_FREGADERO);
+		Lavaplatos lavaplatos = new Lavaplatos(fregadero, mesa, IMPRIMIR_MENSAJES_LAVAPLATOS);
 		
 		for(int i=0; i<numCubiertosT1; i++) {
 			CubiertoT1 act = new CubiertoT1(i);
@@ -73,7 +82,7 @@ public class main {
 		CyclicBarrier barrera = new CyclicBarrier(numComensales);
 		ArrayList<Comensal> comensales = new ArrayList<>();
 		for(int i = 1 ; i<= numComensales; i++) {
-			comensales.add(new Comensal(i, fregadero, mesa, barrera));
+			comensales.add(new Comensal(i, fregadero, mesa, barrera, IMPRIMIR_MENSAJES_COMENSALES));
 		}
 		
 		lavaplatos.start();

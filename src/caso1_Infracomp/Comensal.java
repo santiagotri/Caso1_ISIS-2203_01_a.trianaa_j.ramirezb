@@ -16,21 +16,26 @@ public class Comensal extends Thread{
 	
 	private CyclicBarrier barrera;
 	
-	public Comensal (Integer id, Fregadero pFregadero, Mesa pMesa, CyclicBarrier barrera) {
+	private boolean imprimirMensajes;
+	
+	public Comensal (Integer id, Fregadero pFregadero, Mesa pMesa, CyclicBarrier barrera, boolean imprimirMensajes) {
 		fregadero = pFregadero;
 		this.id = id;
 		mesa = pMesa;
 		this.barrera = barrera;
+		this.imprimirMensajes = imprimirMensajes;
 	}
 	
 	public void run() {
 		int numPlatoActual = mesa.darNumPlatos();
 		int mitadPlatos = (mesa.darNumPlatos())/2;
+		int contadorPlato = 1;
 		boolean centinela = true;
 		while(centinela) {
 			if(tomarCubiertos()) 
 			{
-				comer();
+				comer(contadorPlato);
+				contadorPlato++;
 				numPlatoActual--;
 				dejarCubiertos();
 				if(numPlatoActual == 0)centinela = false;
@@ -97,18 +102,22 @@ public class Comensal extends Thread{
 		return true;
 	}
 	
-	private void comer() {
+	private void comer(int numPlato) {
+		mensaje(" Ha empezado a comer el plato: " + numPlato);
 		espera (3,5);
 	}
 	
 	private void dejarCubiertos() {
 		while(!fregadero.hayEspacio()) {
-			try {
-				Thread.sleep(1000);
-				mensaje("No hay espacio en el fregadero, esperando...");
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			synchronized (fregadero) {
+				try {
+					mensaje("No hay espacio en el fregadero, esperando notify");
+					fregadero.wait();
+					mensaje("Notify recibido, intentando dejar cubiertos en fregadero");
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		mensaje ("Envio los cubiertos al fregadero.(T1: " + cubiertoT1.darId() +",T2: "+ cubiertoT2.darId()+").");
@@ -120,7 +129,7 @@ public class Comensal extends Thread{
 	}
 	
 	private void mensaje (String mensaje) {
-		System.out.println("Comensal " + id + ": " + mensaje);
+		if(imprimirMensajes)System.out.println("Comensal " + id + ": " + mensaje);
 	}
 
 }

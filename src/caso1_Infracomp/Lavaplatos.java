@@ -12,9 +12,12 @@ public class Lavaplatos extends Thread{
 	
 	private Mesa mesa;
 	
-	public Lavaplatos (Fregadero pFregadero, Mesa pMesa) {
+	private boolean imprimirMensajes;
+	
+	public Lavaplatos (Fregadero pFregadero, Mesa pMesa, boolean imprimirMensajes) {
 		fregadero = pFregadero;
 		mesa = pMesa;
+		this.imprimirMensajes =imprimirMensajes;
 	}
 	
 	public void run(){
@@ -25,16 +28,16 @@ public class Lavaplatos extends Thread{
 			if(cubiertoActual != null)devolverCubierto();
 		}
 		mensaje("El lavaplatos se ha detenido :)");
-		Queue<CubiertoT1> cubiertost1 = mesa.darCubiertosT1();
-		Queue<CubiertoT2> cubiertost2 = mesa.darCubiertosT2();
-		System.out.println("\n CubiertosT2:");
-		for (CubiertoT2 cubiertoT2 : cubiertost2) {
-			System.out.print(cubiertoT2.darId());
-		}
-		System.out.println("\n CubiertosT1:");
-		for (CubiertoT1 cubiertoT1 : cubiertost1) {
-			System.out.print(cubiertoT1.darId());
-		}
+//		Queue<CubiertoT1> cubiertost1 = mesa.darCubiertosT1();
+//		Queue<CubiertoT2> cubiertost2 = mesa.darCubiertosT2();
+//		System.out.println("\n CubiertosT2:");
+//		for (CubiertoT2 cubiertoT2 : cubiertost2) {
+//			System.out.print(cubiertoT2.darId());
+//		}
+//		System.out.println("\n CubiertosT1:");
+//		for (CubiertoT1 cubiertoT1 : cubiertost1) {
+//			System.out.print(cubiertoT1.darId());
+//		}
 		
 	}
 	
@@ -56,7 +59,7 @@ public class Lavaplatos extends Thread{
 	}
 	
 	private void mensaje(String mensaje) {
-		System.out.println("Lavaplatos: " + mensaje);
+		if(imprimirMensajes)System.out.println("Lavaplatos: " + mensaje);
 	}
 	
 	private void devolverCubierto() {

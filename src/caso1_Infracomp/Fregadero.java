@@ -1,17 +1,20 @@
 package caso1_Infracomp;
 import java.util.*;
 
-public class Fregadero {
+public class Fregadero extends Object{
 	
 	private int tamFregadero;
 	
 	
 	private Queue<Cubierto> cubiertos;
 	
+	private boolean imprimirMensajes;
 	
-	public Fregadero (int tamFregadero) {
+	
+	public Fregadero (int tamFregadero, boolean imprimirMensajes) {
 		this.tamFregadero = tamFregadero;
 		cubiertos = new LinkedList<>();
+		this.imprimirMensajes=imprimirMensajes;
 	}
 	
 	public int darTamFregadero () {
@@ -24,12 +27,13 @@ public class Fregadero {
 	}
 	
 	public void mensaje (String mensaje) {
-		System.out.println("Fregadero: " + mensaje);
+		if(imprimirMensajes)System.out.println("Fregadero: " + mensaje);
 	}
 	
-	public Cubierto darCubierto () {
+	public synchronized Cubierto darCubierto () {
 		Cubierto rta = cubiertos.poll();
 		mensaje("Se paso a lavar el cubierto con id: " + rta.darId() );
+		if(darTamFregadero()-cubiertos.size()==2) notify();
 		return rta;
 	}
 
