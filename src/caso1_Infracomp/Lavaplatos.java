@@ -23,9 +23,13 @@ public class Lavaplatos extends Thread{
 	public void run(){
 		centinela = true;
 		while (centinela || fregadero.hayCubiertosParaLavar()) {
-			Thread.yield();
-			lavar();
-			if(cubiertoActual != null)devolverCubierto();
+			if(fregadero.hayCubiertosParaLavar()) {
+				lavar();
+				if(cubiertoActual != null)devolverCubierto();
+			}else {
+				Thread.yield();
+			}
+			
 		}
 		mensaje("El lavaplatos se ha detenido :)");
 //		Queue<CubiertoT1> cubiertost1 = mesa.darCubiertosT1();
